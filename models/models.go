@@ -19,17 +19,17 @@ func NewModels(db *sql.DB) Models {
 
 // Song is the type for songs
 type Song struct {
-	ID          int         `json:"id"`
-	Title       string      `json:"title"`
-	Description string      `json:"description"`
-	Year        int         `json:"year"`
-	ReleaseDate time.Time   `json:"release_date"`
-	Duration    int         `json:"duration"`
-	Rating      int         `json:"rating"`
-	RIAARating  string      `json:"riaa_rating"`
-	CreatedAt   time.Time   `json:"-"`
-	UpdatedAt   time.Time   `json:"-"`
-	SongGenre   []SongGenre `json:"genres"`
+	ID          int            `json:"id"`
+	Title       string         `json:"title"`
+	Description string         `json:"description"`
+	Year        int            `json:"year"`
+	ReleaseDate time.Time      `json:"release_date"`
+	Duration    int            `json:"duration"`
+	Rating      int            `json:"rating"`
+	RIAARating  string         `json:"riaa_rating"`
+	CreatedAt   time.Time      `json:"-"`
+	UpdatedAt   time.Time      `json:"-"`
+	SongGenre   map[int]string `json:"genres"`
 }
 
 // Genre is the type for genre
