@@ -18,29 +18,45 @@ func (app *application) getOneSong(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.logger.Println("id is", id)
-
 	song, err := app.models.DB.Get(id)
-
-	// song := models.Song{
-	// 	ID:          id,
-	// 	Title:       "Some song",
-	// 	Description: "Some description",
-	// 	Year:        2021,
-	// 	ReleaseDate: time.Date(2021, 01, 01, 01, 0, 0, 0, time.Local),
-	// 	Duration:    230,
-	// 	Rating:      5,
-	// 	RIAARating:  "PG-13",
-	// 	CreatedAt:   time.Now(),
-	// 	UpdatedAt:   time.Now(),
-	// }
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
 
 	err = app.writeJSON(w, http.StatusOK, song, "song")
 	if err != nil {
-		app.logger.Println(err)
+		app.errorJSON(w, err)
+		return
 	}
 }
 
 func (app *application) getAllSongs(w http.ResponseWriter, r *http.Request) {
+	songs, err := app.models.DB.All()
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
 
+	err = app.writeJSON(w, http.StatusOK, songs, "songs")
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
 }
+
+// func (app *application) deleteSong(w http.ResponseWriter, r *http.Request) {
+
+// }
+
+// func (app *application) insertSong(w http.ResponseWriter, r *http.Request) {
+
+// }
+
+// func (app *application) updateSong(w http.ResponseWriter, r *http.Request) {
+
+// }
+
+// func (app *application) searchSongs(w http.ResponseWriter, r *http.Request) {
+
+// }
