@@ -38,6 +38,34 @@ func (m *DBModel) Get(id int) (*Song, error) {
 		return nil, err
 	}
 
+	// get genres, if any
+	query = `select 
+				sg.id, sg.song_id, sg.genre_id, g.genre_name
+			  from
+			  	songs_genres sg
+				left join genres g on (g.id = sg.genre_id)
+			  where
+			  	sg.song_id = $1`
+	rows, _ := m.DB.QueryContext(ctx, query, id)
+	defer rows.Close()
+
+	var genres []SongGenre
+	for rows.Next() {
+		var sg SongGenre
+		err := rows.Scan(
+			&sg.ID,
+			&sg.SongID,
+			&sg.GenreID,
+			&sg.Genre.GenreName,
+		)
+		if err != nil {
+			return nil, err
+		}
+		genres = append(genres, sg)
+	}
+
+	song.SongGenre = genres
+
 	return &song, nil
 }
 

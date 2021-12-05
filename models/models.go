@@ -27,25 +27,25 @@ type Song struct {
 	Duration    int         `json:"duration"`
 	Rating      int         `json:"rating"`
 	RIAARating  string      `json:"riaa_rating"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
-	SongGenre   []SongGenre `json:"-"`
+	CreatedAt   time.Time   `json:"-"`
+	UpdatedAt   time.Time   `json:"-"`
+	SongGenre   []SongGenre `json:"genres"`
 }
 
 // Genre is the type for genre
 type Genre struct {
-	ID        int       `json:"id"`
+	ID        int       `json:"-"`
 	GenreName string    `json:"genre_name"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
 
 // SongGenre is the type for song genre
 type SongGenre struct {
-	ID        int       `json:"id"`
-	MovieID   int       `json:"movie_id"`
-	GenreID   int       `json:"genre_id"`
+	ID        int       `json:"-"`
+	SongID    int       `json:"-"`
+	GenreID   int       `json:"-"`
 	Genre     Genre     `json:"genre"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
