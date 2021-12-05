@@ -14,5 +14,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/v1/song/:id", app.getOneSong)
 	router.HandlerFunc(http.MethodGet, "/v1/songs", app.getAllSongs)
 
+	router.HandlerFunc(http.MethodGet, "/v1/genres", app.getAllGenres)
+
 	return app.enableCORS(router)
 }
