@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -50,12 +51,17 @@ func (m *DBModel) Get(id int) (*Song, error) {
 }
 
 // All returns all songs and error, if any
-func (m *DBModel) All() ([]*Song, error) {
+func (m *DBModel) All(genre ...int) ([]*Song, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := `select id, title, description, year, release_date, rating, duration, riaa_rating, 
-	created_at, updated_at from songs order by title`
+	where := ""
+	if len(genre) > 0 {
+		where = fmt.Sprintf("where id in (select song_id from songs_genres where genre_id = %d)", genre[0])
+	}
+
+	query := fmt.Sprintf(`select id, title, description, year, release_date, rating, duration, riaa_rating, 
+	created_at, updated_at from songs %s order by title`, where)
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {

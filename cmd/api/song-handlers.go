@@ -59,6 +59,29 @@ func (app *application) getAllGenres(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (app *application) getAllSongsByGenre(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	genreID, err := strconv.Atoi(params.ByName("genre_id"))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	songs, err := app.models.DB.All(genreID)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, songs, "songs")
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+}
+
 // func (app *application) deleteSong(w http.ResponseWriter, r *http.Request) {
 
 // }
