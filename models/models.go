@@ -21,7 +21,7 @@ func NewModels(db *sql.DB) Models {
 type Song struct {
 	ID          int            `json:"id"`
 	Title       string         `json:"title"`
-	Description string         `json:"description"`
+	Artist      string         `json:"artist"`
 	Year        int            `json:"year"`
 	ReleaseDate time.Time      `json:"release_date"`
 	Duration    int            `json:"duration"`

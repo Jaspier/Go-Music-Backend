@@ -16,7 +16,7 @@ func (m *DBModel) Get(id int) (*Song, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := `select id, title, description, year, release_date, rating, duration, riaa_rating, 
+	query := `select id, title, artist, year, release_date, rating, duration, riaa_rating, 
 				created_at, updated_at from songs where id = $1`
 
 	row := m.DB.QueryRowContext(ctx, query, id)
@@ -26,7 +26,7 @@ func (m *DBModel) Get(id int) (*Song, error) {
 	err := row.Scan(
 		&song.ID,
 		&song.Title,
-		&song.Description,
+		&song.Artist,
 		&song.Year,
 		&song.ReleaseDate,
 		&song.Rating,
@@ -60,7 +60,7 @@ func (m *DBModel) All(genre ...int) ([]*Song, error) {
 		where = fmt.Sprintf("where id in (select song_id from songs_genres where genre_id = %d)", genre[0])
 	}
 
-	query := fmt.Sprintf(`select id, title, description, year, release_date, rating, duration, riaa_rating, 
+	query := fmt.Sprintf(`select id, title, artist, year, release_date, rating, duration, riaa_rating, 
 	created_at, updated_at from songs %s order by title`, where)
 
 	rows, err := m.DB.QueryContext(ctx, query)
@@ -76,7 +76,7 @@ func (m *DBModel) All(genre ...int) ([]*Song, error) {
 		err := rows.Scan(
 			&song.ID,
 			&song.Title,
-			&song.Description,
+			&song.Artist,
 			&song.Year,
 			&song.ReleaseDate,
 			&song.Rating,
