@@ -162,3 +162,29 @@ func (m *DBModel) GenresAll() ([]*Genre, error) {
 
 	return genres, nil
 }
+
+func (m *DBModel) InsertSong(song Song) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := `insert into songs (title, artist, year, release_date, duration, rating, riaa_rating,
+				created_at, updated_at) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+
+	_, err := m.DB.ExecContext(ctx, stmt,
+		song.Title,
+		song.Artist,
+		song.Year,
+		song.ReleaseDate,
+		song.Duration,
+		song.Rating,
+		song.RIAARating,
+		song.CreatedAt,
+		song.UpdatedAt,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

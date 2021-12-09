@@ -1,12 +1,20 @@
 package main
 
 import (
+	"backend/models"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
+
+type jsonResp struct {
+	OK      bool   `json: "ok"`
+	Message string `json:"message"`
+}
 
 func (app *application) getOneSong(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
@@ -82,11 +90,58 @@ func (app *application) getAllSongsByGenre(w http.ResponseWriter, r *http.Reques
 
 }
 
+type SongPayload struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Artist      string `json:"artist"`
+	Year        string `json:"year"`
+	ReleaseDate string `json:"release_date"`
+	Duration    string `json:"duration"`
+	Rating      string `json:"rating"`
+	RIAARating  string `json:"riaa_rating"`
+}
+
+func (app *application) editSong(w http.ResponseWriter, r *http.Request) {
+	var payload SongPayload
+
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	var song models.Song
+
+	song.ID, _ = strconv.Atoi(payload.ID)
+	song.Title = payload.Title
+	song.Artist = payload.Artist
+	song.ReleaseDate, _ = time.Parse("2006-01-02", payload.ReleaseDate)
+	song.Year = song.ReleaseDate.Year()
+	song.Duration, _ = strconv.Atoi(payload.Duration)
+	song.Rating, _ = strconv.Atoi(payload.Rating)
+	song.RIAARating = payload.RIAARating
+	song.CreatedAt = time.Now()
+	song.UpdatedAt = time.Now()
+
+	err = app.models.DB.InsertSong(song)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	ok := jsonResp{
+		OK: true,
+	}
+
+	err = app.writeJSON(w, http.StatusOK, ok, "response")
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+}
+
 // func (app *application) deleteSong(w http.ResponseWriter, r *http.Request) {
-
-// }
-
-// func (app *application) insertSong(w http.ResponseWriter, r *http.Request) {
 
 // }
 
