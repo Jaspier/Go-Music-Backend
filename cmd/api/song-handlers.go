@@ -123,10 +123,12 @@ func (app *application) editSong(w http.ResponseWriter, r *http.Request) {
 	song.CreatedAt = time.Now()
 	song.UpdatedAt = time.Now()
 
-	err = app.models.DB.InsertSong(song)
-	if err != nil {
-		app.errorJSON(w, err)
-		return
+	if song.ID == 0 {
+		err = app.models.DB.InsertSong(song)
+		if err != nil {
+			app.errorJSON(w, err)
+			return
+		}
 	}
 
 	ok := jsonResp{
