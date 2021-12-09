@@ -215,3 +215,17 @@ func (m *DBModel) UpdateSong(song Song) error {
 
 	return nil
 }
+
+func (m *DBModel) DeleteSong(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := "delete from songs where id = $1"
+
+	_, err := m.DB.ExecContext(ctx, stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

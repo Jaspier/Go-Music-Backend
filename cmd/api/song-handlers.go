@@ -156,9 +156,31 @@ func (app *application) editSong(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// func (app *application) deleteSong(w http.ResponseWriter, r *http.Request) {
+func (app *application) deleteSong(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
 
-// }
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	err = app.models.DB.DeleteSong(id)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	ok := jsonResp{
+		OK: true,
+	}
+
+	err = app.writeJSON(w, http.StatusOK, ok, "response")
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+}
 
 // func (app *application) updateSong(w http.ResponseWriter, r *http.Request) {
 
