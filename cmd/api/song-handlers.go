@@ -112,6 +112,13 @@ func (app *application) editSong(w http.ResponseWriter, r *http.Request) {
 
 	var song models.Song
 
+	if payload.ID != "0" {
+		id, _ := strconv.Atoi(payload.ID)
+		s, _ := app.models.DB.Get(id)
+		song = *s
+		song.UpdatedAt = time.Now()
+	}
+
 	song.ID, _ = strconv.Atoi(payload.ID)
 	song.Title = payload.Title
 	song.Artist = payload.Artist
@@ -125,6 +132,12 @@ func (app *application) editSong(w http.ResponseWriter, r *http.Request) {
 
 	if song.ID == 0 {
 		err = app.models.DB.InsertSong(song)
+		if err != nil {
+			app.errorJSON(w, err)
+			return
+		}
+	} else {
+		err = app.models.DB.UpdateSong(song)
 		if err != nil {
 			app.errorJSON(w, err)
 			return

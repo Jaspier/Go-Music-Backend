@@ -188,3 +188,30 @@ func (m *DBModel) InsertSong(song Song) error {
 
 	return nil
 }
+
+func (m *DBModel) UpdateSong(song Song) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := `update songs set title = $1, artist = $2, year = $3, release_date = $4, 
+				duration = $5, rating = $6, riaa_rating = $7,
+				updated_at = $8 where id = $9`
+
+	_, err := m.DB.ExecContext(ctx, stmt,
+		song.Title,
+		song.Artist,
+		song.Year,
+		song.ReleaseDate,
+		song.Duration,
+		song.Rating,
+		song.RIAARating,
+		song.UpdatedAt,
+		song.ID,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
