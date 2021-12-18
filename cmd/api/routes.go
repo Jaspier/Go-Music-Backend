@@ -32,8 +32,7 @@ func (app *application) routes() http.Handler {
 
 	router.POST("/v1/admin/editsong", app.wrap(secure.ThenFunc(app.editSong)))
 
-	// router.HandlerFunc(http.MethodPost, "/v1/admin/editsong", app.editSong)
-	router.HandlerFunc(http.MethodGet, "/v1/admin/deletesong/:id", app.deleteSong)
+	router.GET("/v1/admin/deletesong/:id", app.wrap(secure.ThenFunc(app.deleteSong)))
 
 	return app.enableCORS(router)
 }
