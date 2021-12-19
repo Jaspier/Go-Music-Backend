@@ -13,7 +13,7 @@ var songs []*models.Song
 
 // graphql schema definition
 var fields = graphql.Fields{
-	"movie": &graphql.Field{
+	"song": &graphql.Field{
 		Type:        songType,
 		Description: "Get song by id",
 		Args: graphql.FieldConfigArgument{
