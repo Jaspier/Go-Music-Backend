@@ -22,7 +22,7 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodGet, "/status", app.statusHandler)
 
-	router.HandlerFunc(http.MethodPost, "/v1/graphql/list", app.songsGraphQL)
+	router.HandlerFunc(http.MethodPost, "/v1/graphql", app.songsGraphQL)
 
 	router.HandlerFunc(http.MethodPost, "/v1/signin", app.Signin)
 

@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/graphql-go/graphql"
 )
@@ -41,6 +42,28 @@ var fields = graphql.Fields{
 		Description: "Get all songs",
 		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 			return songs, nil
+		},
+	},
+	"search": &graphql.Field{
+		Type:        graphql.NewList(songType),
+		Description: "Search songs by title",
+		Args: graphql.FieldConfigArgument{
+			"titleContains": &graphql.ArgumentConfig{
+				Type: graphql.String,
+			},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			var theList []*models.Song
+			search, ok := params.Args["titleContains"].(string)
+			if ok {
+				for _, currentSong := range songs {
+					if strings.Contains(currentSong.Title, search) {
+						log.Println("Found one")
+						theList = append(theList, currentSong)
+					}
+				}
+			}
+			return theList, nil
 		},
 	},
 }
