@@ -55,7 +55,7 @@ var songType = graphql.NewObject(
 			"title": &graphql.Field{
 				Type: graphql.String,
 			},
-			"description": &graphql.Field{
+			"artist": &graphql.Field{
 				Type: graphql.String,
 			},
 			"year": &graphql.Field{
