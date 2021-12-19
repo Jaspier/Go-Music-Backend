@@ -57,8 +57,7 @@ var fields = graphql.Fields{
 			search, ok := params.Args["titleContains"].(string)
 			if ok {
 				for _, currentSong := range songs {
-					if strings.Contains(currentSong.Title, search) {
-						log.Println("Found one")
+					if strings.Contains(strings.ToLower(currentSong.Title), strings.ToLower(search)) {
 						theList = append(theList, currentSong)
 					}
 				}
