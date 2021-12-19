@@ -95,6 +95,9 @@ var songType = graphql.NewObject(
 			"riaa_rating": &graphql.Field{
 				Type: graphql.String,
 			},
+			"cover": &graphql.Field{
+				Type: graphql.String,
+			},
 			"created_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},

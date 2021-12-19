@@ -27,9 +27,10 @@ type Song struct {
 	Duration    int            `json:"duration"`
 	Rating      int            `json:"rating"`
 	RIAARating  string         `json:"riaa_rating"`
-	CreatedAt   time.Time      `json:"-"`
-	UpdatedAt   time.Time      `json:"-"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
 	SongGenre   map[int]string `json:"genres"`
+	Cover       string         `json:"cover"`
 }
 
 // Genre is the type for genre

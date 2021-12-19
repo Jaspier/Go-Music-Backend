@@ -17,7 +17,7 @@ func (m *DBModel) Get(id int) (*Song, error) {
 	defer cancel()
 
 	query := `select id, title, artist, year, release_date, rating, duration, riaa_rating, 
-				created_at, updated_at from songs where id = $1`
+				created_at, updated_at, coalesce(cover, '') from songs where id = $1`
 
 	row := m.DB.QueryRowContext(ctx, query, id)
 
@@ -34,6 +34,7 @@ func (m *DBModel) Get(id int) (*Song, error) {
 		&song.RIAARating,
 		&song.CreatedAt,
 		&song.UpdatedAt,
+		&song.Cover,
 	)
 	if err != nil {
 		return nil, err
@@ -61,7 +62,7 @@ func (m *DBModel) All(genre ...int) ([]*Song, error) {
 	}
 
 	query := fmt.Sprintf(`select id, title, artist, year, release_date, rating, duration, riaa_rating, 
-	created_at, updated_at from songs %s order by title`, where)
+	created_at, updated_at, coalesce(cover, '') from songs %s order by title`, where)
 
 	rows, err := m.DB.QueryContext(ctx, query)
 	if err != nil {
@@ -84,6 +85,7 @@ func (m *DBModel) All(genre ...int) ([]*Song, error) {
 			&song.RIAARating,
 			&song.CreatedAt,
 			&song.UpdatedAt,
+			&song.Cover,
 		)
 		if err != nil {
 			return nil, err
@@ -168,7 +170,7 @@ func (m *DBModel) InsertSong(song Song) error {
 	defer cancel()
 
 	stmt := `insert into songs (title, artist, year, release_date, duration, rating, riaa_rating,
-				created_at, updated_at) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+				created_at, updated_at, cover) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
 
 	_, err := m.DB.ExecContext(ctx, stmt,
 		song.Title,
@@ -180,6 +182,7 @@ func (m *DBModel) InsertSong(song Song) error {
 		song.RIAARating,
 		song.CreatedAt,
 		song.UpdatedAt,
+		song.Cover,
 	)
 
 	if err != nil {
@@ -195,7 +198,7 @@ func (m *DBModel) UpdateSong(song Song) error {
 
 	stmt := `update songs set title = $1, artist = $2, year = $3, release_date = $4, 
 				duration = $5, rating = $6, riaa_rating = $7,
-				updated_at = $8 where id = $9`
+				updated_at = $8, cover = $9 where id = $10`
 
 	_, err := m.DB.ExecContext(ctx, stmt,
 		song.Title,
@@ -206,6 +209,7 @@ func (m *DBModel) UpdateSong(song Song) error {
 		song.Rating,
 		song.RIAARating,
 		song.UpdatedAt,
+		song.Cover,
 		song.ID,
 	)
 

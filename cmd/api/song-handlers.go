@@ -99,6 +99,7 @@ type SongPayload struct {
 	Duration    string `json:"duration"`
 	Rating      string `json:"rating"`
 	RIAARating  string `json:"riaa_rating"`
+	Cover       string `json:"cover"`
 }
 
 func (app *application) editSong(w http.ResponseWriter, r *http.Request) {
@@ -129,6 +130,7 @@ func (app *application) editSong(w http.ResponseWriter, r *http.Request) {
 	song.RIAARating = payload.RIAARating
 	song.CreatedAt = time.Now()
 	song.UpdatedAt = time.Now()
+	song.Cover = payload.Cover
 
 	if song.ID == 0 {
 		err = app.models.DB.InsertSong(song)
@@ -181,11 +183,3 @@ func (app *application) deleteSong(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
-// func (app *application) updateSong(w http.ResponseWriter, r *http.Request) {
-
-// }
-
-// func (app *application) searchSongs(w http.ResponseWriter, r *http.Request) {
-
-// }
