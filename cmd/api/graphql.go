@@ -2,6 +2,9 @@ package main
 
 import (
 	"backend/models"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -91,4 +94,24 @@ func (app *application) songsGraphQL(w http.ResponseWriter, r *http.Request) {
 	query := string(q)
 
 	log.Println(query)
+
+	rootQuery := graphql.ObjectConfig{Name: "RootQuery", Fields: fields}
+	schemaConfig := graphql.SchemaConfig{Query: graphql.NewObject(rootQuery)}
+	schema, err := graphql.NewSchema(schemaConfig)
+	if err != nil {
+		app.errorJSON(w, errors.New("failed to create schema"))
+		log.Println(err)
+		return
+	}
+
+	params := graphql.Params{Schema: schema, RequestString: query}
+	res := graphql.Do(params)
+	if len(res.Errors) > 0 {
+		app.errorJSON(w, errors.New(fmt.Sprintf("failed: %+v", res.Errors)))
+	}
+
+	j, _ := json.MarshalIndent(res, "", "  ")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
 }
