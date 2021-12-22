@@ -1,2 +1,2 @@
 # Go-Music-Backend
-Backend for Go-Music project
+Backend for [GoMusic project](https://github.com/Jaspier/Go-Music)
